@@ -1,0 +1,350 @@
+swagger: '2.0'
+info:
+  title: REST API for managing cash gifts (Gifty)
+  description: |-
+    # 1 Introduction 
+     An API for _"__Gifting cash the cashless way__"_. 
+     Allows the gifter and the reciever of a cash-gift to create,pay and redeem gifts in simple, smart and convenient way.
+     ## Purpose:
+     ## Scope: 
+
+  contact:
+    name: "cloud9"
+    url: "https://developer.abnamro.com"
+    email: "developerportal@abnamro.com"
+  license:
+    name: "Copyright (c) All Rights Reserved."
+    url: "https://developer.abnamro.com"
+  version: "1.0"
+host: "api.abnamro.com"
+basePath: /gifty/v1
+tags: 
+- name: "Gifty"
+  description: "Provides REST resources that can be consumed for initiation of a cash-gift. The reciever can redeem the gift (link shared via mail, sms, QrCode) by furnishing one's bank account."
+schemes:
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /cashGiftCreation:
+    post:
+      tags:
+        - "cashGiftCreation"
+      summary:  This resource creates a new cash-gift that is redeemable. 
+      description:   A post request to this resource creates a cash-gift in response to which a link (URL) 
+        is recieved that can be shared with the reciever. 
+        The link  is an equivalent of an envelop with cash. The gifter can share the link to the intended 
+        reciever in the same way an envelop is shared.
+      operationId: createCashGift
+      parameters:
+        - name: CashGiftCreationInstruction
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CashGiftCreationInstruction'
+            
+      responses:
+        '201':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CashGiftCreationResponse'
+        '400':
+          description: Bad request/parameter error
+          schema:
+            $ref: '#/definitions/Errors'
+        '401':
+          description: Unauthorised
+        '403':
+          description: Not Allowed/Forbidden
+          schema:
+            $ref: '#/definitions/Errors'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Errors'
+      security: 
+      - creation-security:
+        - "gifty:cash-gift:create"
+  /cashGiftDetails/{giftId}:
+    get:
+      tags:
+        - "viewCashGift"
+      summary:  This resource allows to retrieve details of a existing cash-gift. 
+      description:   A get request to this resource with a valid giftId returns the details of the cash-gift. 
+      operationId: viewCashGiftDetails
+      parameters:
+        - name: giftId
+          in: path
+          description: uniqueId of the gift 
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CashGiftCreationResponse'
+        '400':
+          description: Bad request/parameter error
+          schema:
+            $ref: '#/definitions/Errors'
+        '401':
+          description: Unauthorised
+        '403':
+          description: Not Allowed/Forbidden
+          schema:
+            $ref: '#/definitions/Errors'
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Errors'
+      security: 
+      - creation-security:
+        - "gifty:cash-gift:create"
+  /cashGiftRedemption:
+    post:
+      tags:
+        - "cashGiftRedemption"
+      summary: Redeem a valid cash-gift.
+      description: "A post request to this resource redeems a valid cash-gift on behalf of the reciever. The request should contain the IBAN of the reciever, to which the cash-gift amount is credited after successful redemption. Redemption Code: To defy brute force attack the request must also be supplied with a redemption code, that the 'gifter' has recieved while creating the cash-gift."
+      operationId: redeemCashGift
+      parameters:
+        - name: RedeemptionInstruction
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CashGiftRedeemtion'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CashGiftRedeemtionResponse'
+        '400':
+          description: Bad request/parameter error
+          schema:
+            $ref: '#/definitions/Errors'
+        '401':
+          description: Unauthorised
+        '403':
+          description: Not Allowed/Forbidden
+          schema:
+            $ref: '#/definitions/Errors'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Errors'
+      security: 
+      - creation-security:
+        - "gifty:cash-gift:create"
+
+definitions:
+  CashGiftCreationInstruction:
+    type: object
+    description: Contains all the data required to successfully create a cash-gift.
+    required:
+      - giftAmount
+      - message
+    properties:
+      giftAmount:
+        $ref: '#/definitions/CashGiftAmount'
+      message:
+        $ref: '#/definitions/CashGiftmessage'
+      gifterDetails:
+        $ref: '#/definitions/GifterDetails'
+      recieverDetails:
+        $ref: '#/definitions/RecipientDetails'
+      idealTxnId:
+        description: A valid iDeal transaction id. This is the transactionId shared by iDeal service. 
+        type: string
+        format: ^[0-9A-Za-z]{16}$
+        minLength: 3
+        maxLength: 70
+  CashGiftCreationResponse:
+    type: object
+    description: The response of successful 'createCashGift' operation  
+    properties:
+      giftDetails:
+        $ref: '#/definitions/CashGiftDetails'
+      gifterDetails:
+        $ref: '#/definitions/GifterDetails'
+      recieverDetails:
+        $ref: '#/definitions/RecipientDetails'
+      expirationDate:
+        type: string
+        description: The last date one can redeem the cash-gift.
+        format: date
+
+  CashGiftRedeemtion:
+    type: object
+    description: This object encapsulated the information required for redeeming the cash-gift.
+    required:
+      - giftId
+    properties:
+      giftId:
+        $ref: '#/definitions/CashGiftId'
+      recipientAccountNumber:
+        type: string
+        description: The IBAN account number of the reciever.
+        pattern: '^[A-Z0-9]{10,22}$'
+      recipientName:
+        description: The name of the recipient.
+        type: string
+        minimum: 3
+        maximum: 70
+      redeemptionCode:
+        description: A seceret redemption code that is required for successful redeemption.
+        type: string
+        pattern: ^[0-9]6
+  CashGiftRedeemtionResponse:
+    type: object
+    description: The Corporate Payment resource to create.
+    required:
+      - result
+    properties:
+      result:
+        description: The amount of the transaction always positive.
+        type: string
+        format: double
+        enum: 
+         - SUCCESS
+         - FAILURE
+      timestamp:
+        type: string
+        description: The IBAN account number of the reciever.
+        pattern: '^[A-Z0-9]{10,22}$'
+      reason:
+        type: string
+        description: The reason behind FAILURE
+        enum: 
+          - INVALID_CASH_GIFT_ID
+          - ALREADY_REDEEMED
+          - EXPIRED
+
+  CashGiftDetails:
+    type: object
+    description: Holds the details of the cash-gift
+    properties:
+      giftAmount:
+        $ref: '#/definitions/CashGiftAmount'
+      message:
+        $ref: '#/definitions/CashGiftmessage'
+      status:
+        $ref: '#/definitions/CashGiftStatus'
+      id:
+        $ref: '#/definitions/CashGiftId'
+        
+  GifterDetails:
+    type: object
+    description: Holds the details of the person who is gifting
+    properties:
+      name:
+        $ref: '#/definitions/Name'
+      emailId:
+        $ref: '#/definitions/EmailId'
+      phoneNumber: 
+        $ref: '#/definitions/PhoneNumber'
+      
+  RecipientDetails:
+    type: object
+    description: Holds the details of the person who is the recipient of the cash-gift
+    properties:
+      name:
+        $ref: '#/definitions/Name'
+      emailId:
+        $ref: '#/definitions/EmailId'
+      phoneNumber: 
+        $ref: '#/definitions/PhoneNumber'
+
+  Name:
+    type: string
+    description: The name of the person.
+    minLength: 3
+    maxLength: 70
+  EmailId:
+    description: The email id of the person.
+    type: string
+    pattern: ^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$
+  PhoneNumber: 
+    description: The mobile phone number of a person. Only Dutch numbers.
+    type: string
+    pattern: ^06[0-9]{8}$
+  CashGiftAmount:
+    description: The amount of the cash to be gifted.
+    type: number
+    format: double
+    maximum: 750
+    minimum: 0.5
+    multipleOf: 0.5
+  CashGiftmessage:
+    type: string
+    description: A message to the reciepient of the cash-gift.
+    minLength: 3
+    maxLength: 70
+  CashGiftStatus:
+    type: string
+    description: The status of the cash-gift.
+    enum:
+      - CREATED
+      - READY2REDEEM
+      - REDEEMED
+      - EXPIRED
+  CashGiftId:
+    description: A unique id of the cash-gift.
+    type: string
+    pattern: ^[0-9A-Za-z]{16}
+
+
+
+
+  Errors:
+    type: object
+    description: an array of error messsages
+    properties:
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    required:
+      - code
+      - status
+    properties:
+      code:
+        type: string
+        example: INVALID_IBAN
+        description: >-
+          The unique error code key which is used to lookup the message in the
+          content management system.
+      message:
+        type: string
+        example: IBAN is not of the correct format.
+        description: Default message
+      traceId:
+        type: string
+        example: f1b554d8-406a-4301-b549-d539a5e885ae
+        description: The unique id for end to end tracing of the error.
+      status:
+        type: string
+        example: 400
+        description: HTTP status code
+      params:
+        type: array
+        description: >-
+          Optionally, a message in the content management system may contain
+          dynamic parameters. This attributes gives the values of those dynamic
+          parameters.
+        items:
+          type: string
+          example: null
+securityDefinitions:
+  creation-security:
+    type: "oauth2"
+    description: "" 
+    flow: implicit
+    authorizationUrl: "https://api.ing.com/oauth2/token"
+    scopes: 
+       gifty:cash-gift:create: "Create a cash-gift."
