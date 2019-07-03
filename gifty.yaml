@@ -5,8 +5,6 @@ info:
     # Introduction 
      An API for _"__Gifting cash the cashless way__"_. 
      Allows the gifter and the reciever of a cash-gift to create,pay and redeem gifts in simple, smart and convenient way.
-     ## Purpose:
-     ## Scope: 
   contact:
     name: "cloud9"
     url: "https://developer.cloud9.com"
