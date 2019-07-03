@@ -1,45 +1,56 @@
 swagger: '2.0'
 info:
-  title: REST API for managing cash gifts (Gifty)
+  title:  Gifte Gifting cash the cashless way. An API that makes gifting cash simple, smart and convenient.
   description: |-
-    # 1 Introduction 
+    # Introduction 
      An API for _"__Gifting cash the cashless way__"_. 
      Allows the gifter and the reciever of a cash-gift to create,pay and redeem gifts in simple, smart and convenient way.
      ## Purpose:
      ## Scope: 
-
   contact:
     name: "cloud9"
-    url: "https://developer.abnamro.com"
-    email: "developerportal@abnamro.com"
+    url: "https://developer.cloud9.com"
+    email: "developerportal@cloud9.com"
   license:
     name: "Copyright (c) All Rights Reserved."
-    url: "https://developer.abnamro.com"
+    url: "https://developer.cloud9.com"
   version: "1.0"
-host: "api.abnamro.com"
+  x-apiType: open
+host: "api.cloud9.com"
 basePath: /gifty/v1
 tags: 
 - name: "Gifty"
-  description: "Provides REST resources that can be consumed for initiation of a cash-gift. The reciever can redeem the gift (link shared via mail, sms, QrCode) by furnishing one's bank account."
+  description: | 
+    Provides REST resources that can be consumed for  creation, retrieval and redemption of a cash-gift. <br>
+    
+    ---
+    
+    A simple user journey of using the API resources. 
+    
+    * The person gifting (gifter) the cash creates a cash-gift by means of _/cashGiftCreation_, and recieves a link representing the gift. There-upon the gifter can share this link (via mail, sms, QrCode) to the intended recipient of the gift.<br>
+    * The recipient can view the details of the cash-gift using _/cashGiftDetails_ and can redeem the gift by furnishing one's bank account in request towards _/cashGiftRedemption_.<br>
+    ---
+
 schemes:
 - "https"
-consumes:
-- "application/json"
-produces:
-- "application/json"
 paths:
   /cashGiftCreation:
     post:
       tags:
         - "cashGiftCreation"
       summary:  This resource creates a new cash-gift that is redeemable. 
-      description:   A post request to this resource creates a cash-gift in response to which a link (URL) 
+      description: | 
+        A post request to this resource creates a cash-gift; in response to which a link  
         is recieved that can be shared with the reciever. 
-        The link  is an equivalent of an envelop with cash. The gifter can share the link to the intended 
+        _Consider this as an envelop with cash._ <br> The gifter can share the link to the intended 
         reciever in the same way an envelop is shared.
       operationId: createCashGift
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
       parameters:
-        - name: CashGiftCreationInstruction
+        - name: cashGiftCreationInstruction
           in: body
           required: true
           schema:
@@ -74,6 +85,8 @@ paths:
       summary:  This resource allows to retrieve details of a existing cash-gift. 
       description:   A get request to this resource with a valid giftId returns the details of the cash-gift. 
       operationId: viewCashGiftDetails
+      produces:
+      - "application/json"
       parameters:
         - name: giftId
           in: path
@@ -111,8 +124,12 @@ paths:
       summary: Redeem a valid cash-gift.
       description: "A post request to this resource redeems a valid cash-gift on behalf of the reciever. The request should contain the IBAN of the reciever, to which the cash-gift amount is credited after successful redemption. Redemption Code: To defy brute force attack the request must also be supplied with a redemption code, that the 'gifter' has recieved while creating the cash-gift."
       operationId: redeemCashGift
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
       parameters:
-        - name: RedeemptionInstruction
+        - name: redeemptionInstruction
           in: body
           required: true
           schema:
@@ -159,7 +176,7 @@ definitions:
       idealTxnId:
         description: A valid iDeal transaction id. This is the transactionId shared by iDeal service. 
         type: string
-        format: ^[0-9A-Za-z]{16}$
+        pattern: ^[0-9A-Za-z]{16}$
         minLength: 3
         maxLength: 70
   CashGiftCreationResponse:
@@ -207,7 +224,6 @@ definitions:
       result:
         description: The amount of the transaction always positive.
         type: string
-        format: double
         enum: 
          - SUCCESS
          - FAILURE
@@ -307,6 +323,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Error'
+        maxItems: 10
+        minItems: 1
   Error:
     type: object
     required:
@@ -340,6 +358,8 @@ definitions:
         items:
           type: string
           example: null
+        maxItems: 10
+        minItems: 0
 securityDefinitions:
   creation-security:
     type: "oauth2"
