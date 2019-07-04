@@ -1,11 +1,7 @@
 swagger: '2.0'
 info:
   title:  Gifting Gifting cash the cashless way. 
-  description: |-
-    # Introduction 
-    An API that allows you to gift money, without needing any information of the recipient. You easily can create a link and for the recipient which they can use to redeem the money directly onto their bank account. 
-      _"__Gifting cash the cashless way__"_. 
-     Allows the gifter and the reciever of digital cash to create, pay, gift and redeem this in a simple, smart and convenient way.
+
   contact:
     name: "Cloud9"
     url: "https://developer.cloud9.com"
@@ -15,6 +11,36 @@ info:
     url: "https://developer.cloud9.com"
   version: "1.0"
   x-apiType: open
+  description: |-
+    
+    # Overview
+    
+    ## Introduction
+    
+    An API that allows you to gift money, without needing any information of the recipient. You easily can create a link for the recipient which they can use to redeem the money directly onto their bank account. 
+      _"__Gifting cash the cashless way__"_. 
+     Allows the users to create, pay, gift and redeem money in a simple, smart and convenient way.
+    
+    ## Gaining Access
+    
+    Users need to register with ABN AMRO developer portlt to access this api. Please refer to the _Gaining Access_ part of the link
+    https://developer.abnamro.com/api/tikkie-v1/tikkie-api-documentation
+  
+    ## Authentication
+    Please refer to the _Authentication_ part of the link
+    https://developer.abnamro.com/api/tikkie-v1/tikkie-api-documentation
+
+    ---
+    
+    # Functional Overview
+    
+    A simple user journey of using the API resources. 
+    
+    * The person gifting (gifter) the digital cash creates the cash by means of _/cashGiftCreation_, and recieves a link representing the gift. The gifter can share this link (via mail, sms, QrCode) to the recipient of the gift.<br>
+    * The recipient can view the details of the digital cash using _/cashGiftDetails_ and can redeem the digital cash by adding their bank account and name in a request towards _/cashGiftRedemption_.<br>
+    
+    ---
+    
 host: "api.cloud9.com"
 basePath: /gifty/v1
 tags: 
@@ -22,13 +48,6 @@ tags:
   description: | 
     Provides REST resources that can be consumed for the creation, retrieval and redemption of digital cash. <br>
     
-    ---
-    
-    A simple user journey of using the API resources. 
-    
-    * The person gifting (gifter) the digital cash creates the cash by means of _/cashGiftCreation_, and recieves a link representing the gift. The gifter can share this link (via mail, sms, QrCode) to the recipient of the gift.<br>
-    * The recipient can view the details of the digital cash using _/cashGiftDetails_ and can redeem the digital cash by adding their bank account and name in a request towards _/cashGiftRedemption_.<br>
-    ---
 
 schemes:
 - "https"
