@@ -4,7 +4,7 @@ info:
   description: |-
     # Introduction 
      An API for _"__Gifting cash the cashless way__"_. 
-     Allows the gifter and the reciever of a cash-gift to create,pay and redeem gifts in simple, smart and convenient way.
+     Allows the gifter and the reciever of a cash-gift to create,pay and redeem gifts in a simple, smart and convenient way.
   contact:
     name: "cloud9"
     url: "https://developer.cloud9.com"
@@ -80,7 +80,7 @@ paths:
     get:
       tags:
         - "viewCashGift"
-      summary:  This resource allows to retrieve details of a existing cash-gift. 
+      summary:  This resource allows to retrieve details of an existing cash-gift. 
       description:   A get request to this resource with a valid giftId returns the details of the cash-gift. 
       operationId: viewCashGiftDetails
       produces:
@@ -88,7 +88,7 @@ paths:
       parameters:
         - name: giftId
           in: path
-          description: uniqueId of the gift 
+          description: unique id of the gift 
           required: true
           type: string
       responses:
@@ -127,16 +127,16 @@ paths:
       produces:
       - "application/json"
       parameters:
-        - name: redeemptionInstruction
+        - name: redemptionInstruction
           in: body
           required: true
           schema:
-            $ref: '#/definitions/CashGiftRedeemtion'
+            $ref: '#/definitions/CashGiftRedemption'
       responses:
         '200':
           description: successful operation
           schema:
-            $ref: '#/definitions/CashGiftRedeemtionResponse'
+            $ref: '#/definitions/CashGiftRedemptionResponse'
         '400':
           description: Bad request/parameter error
           schema:
