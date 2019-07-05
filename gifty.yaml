@@ -227,22 +227,28 @@ definitions:
     description: This object encapsulates the information required for redeeming the digital cash.
     required:
       - giftId
+      - recipientAccountNumber
+      - recipientName
+      - redemptionCode
     properties:
       giftId:
         $ref: '#/definitions/CashGiftId'
       recipientAccountNumber:
         type: string
-        description: The IBAN account number of the recipient.
-        pattern: '^[A-Z0-9]{10,22}$'
+        description: The NL IBAN account number of the recipient.
+        pattern: '^NL[0-9]{2}[A-Z]4[0-9]{8}$'
+        example: NL62ABNA0528362518
       recipientName:
         description: The name of the recipient.
         type: string
         minimum: 3
         maximum: 70
+        example: Happy Person
       redemptionCode:
         description: A seceret redemption code that is required for successful redemption.
         type: string
         pattern: ^[0-9]6
+        example: 537273
   CashGiftRedemptionResponse:
     type: object
     description: The Corporate Payment resource to create.
