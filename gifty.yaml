@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title:  Gifting Gifting cash the cashless way. 
+  title:  Gifting cash the cashless way. 
 
   contact:
     name: "Cloud9"
@@ -23,7 +23,7 @@ info:
      
     ## Gaining Access
     
-    Users need to register with ABN AMRO developer portlt to access this api. Please refer to the _Gaining Access_ part of the link
+    Users need to register with ABN AMRO developer portal to access this api. Please refer to the _Gaining Access_ part of the link
     https://developer.abnamro.com/api/tikkie-v1/tikkie-api-documentation .
   
     ## Authentication
@@ -38,8 +38,6 @@ info:
     
     * The person gifting (gifter) the digital cash creates the cash by means of _/cashGiftCreation_, and recieves a link representing the gift. The gifter can share this link (via mail, sms, QrCode) to the recipient of the gift.<br>
     * The recipient can view the details of the digital cash using _/cashGiftDetails_ and can redeem the digital cash by adding their bank account and name in a request towards _/cashGiftRedemption_.<br>
-    
-    <img src="https://github.com/vivikul/gifty/blob/master/smiley.jpg">
     
     ---
     
@@ -59,8 +57,15 @@ paths:
         - "cashGiftCreation"
       summary:  This resource creates a new cash gift that is redeemable. 
       description: | 
-        A post request to this resource creates digital cash, to which in response a link is received that can be shared with the recipient. 
-        _Consider this as an envelope with cash._ <br> The gifter can share the link to the recipient in the way he prefers.
+        A post request to this resource creates digital cash, in response to which a unique Id (that can be converted to a link) is received. This unique Id can be shared with the recipient. _Consider this as an envelope with cash._ <br> 
+        The gifter can share the link to the recipient in the way he prefers.
+        
+        _idealTxnId:_
+        This is a unique valid ideal Txn Id that needs to be provided for the cashGift to be created successfully.
+        
+        _redemptionCode:_
+        Along with the unique Id, is received a 6 digit redemptionCode on gifters emailId or  phoneNumber.
+        So it is important to provide either of it while creating the request. 
       operationId: createCashGift
       consumes:
       - "application/json"
@@ -181,6 +186,9 @@ definitions:
     description: Contains all the data required to successfully create the digital cash.
     required:
       - giftAmount
+      - message
+      - gifterDetails
+      - idealTxnId
     properties:
       giftAmount:
         $ref: '#/definitions/CashGiftAmount'
@@ -259,6 +267,10 @@ definitions:
   CashGiftDetails:
     type: object
     description: Holds the details of the digital cash
+    required: 
+    - giftAmount
+    - status
+    - id
     properties:
       giftAmount:
         $ref: '#/definitions/CashGiftAmount'
@@ -271,7 +283,9 @@ definitions:
         
   GifterDetails:
     type: object
-    description: Holds the details of the person who is gifting
+    description: Holds the details of the person who is gifting. Atleast one of emailId and phoneNumber should be present to make sure the gifter receiver gets the redemptionCode.
+    required: 
+      - name
     properties:
       name:
         $ref: '#/definitions/Name'
@@ -296,14 +310,17 @@ definitions:
     description: The name of the person.
     minLength: 3
     maxLength: 70
+    example: Foo Bar
   EmailId:
     description: The email id of the person.
     type: string
     pattern: ^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$
+    example: john.doe@universal.com
   PhoneNumber: 
     description: The mobile phone number of a person. Only Dutch numbers.
     type: string
     pattern: ^06[0-9]{8}$
+    example: 0685782295
   CashGiftAmount:
     description: The amount of the cash to be gifted.
     type: number
@@ -311,11 +328,13 @@ definitions:
     maximum: 750
     minimum: 0.5
     multipleOf: 0.5
+    example: 50
   CashGiftmessage:
     type: string
     description: A message to the recipient of the digital cash.
     minLength: 3
     maxLength: 140
+    example: Congratulations on your 50th Birthday
   CashGiftStatus:
     type: string
     description: The status of the digital cash.
@@ -324,11 +343,12 @@ definitions:
       - READY2REDEEM
       - REDEEMED
       - EXPIRED
+    example: READY2REDEEM
   CashGiftId:
     description: A unique id of the digital cash.
     type: string
     pattern: ^[0-9A-Za-z]{16}
-
+    example: GXV3g95DGDFrffsf
   Errors:
     type: object
     description: an array of error messsages
@@ -347,14 +367,14 @@ definitions:
     properties:
       code:
         type: string
-        example: INVALID_IBAN
+        example: INVALID_AMOUNT
         description: >-
           The unique error code key which is used to lookup the message in the
           content management system.
       message:
         type: string
-        example: IBAN is not of the correct format.
-        description: Default message
+        example: Amount is not valid.
+        description: Default message explaining the unsuccessful response
       traceId:
         type: string
         example: f1b554d8-406a-4301-b549-d539a5e885ae
