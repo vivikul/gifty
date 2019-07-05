@@ -408,9 +408,29 @@ definitions:
       code:
         type: string
         example: INVALID_AMOUNT
-        description: >-
+        description: |
           The unique error code key which is used to lookup the message in the
           content management system.
+          
+          | CODE                                      | Description                         |
+          | -------                                   | --------                            |
+          | INVALID_FORMAT_GIFT_AMOUNT                | Invalid format of field             |
+          | INVALID_FORMAT_MESSAGE                    | Invalid format of field             |
+          | INVALID_FORMAT_GIFTER_NAME                | Invalid format of field             |
+          | INVALID_FORMAT_GIFTER_EMAIL_ID            | Invalid format of field             |
+          | INVALID_FORMAT_GIFTER_PHONE_NR            | Invalid format of field             |
+          | INVALID_FORMAT_RECIPIENT_NAME             | Invalid format of field             |
+          | INVALID_FORMAT_RECIPIENT_EMAIL_ID         | Invalid format of field             |
+          | INVALID_FORMAT_RECIPIENT_PHONE_NR         | Invalid format of field             |
+          | INVALID_FORMAT_IDEAL_TXN_ID               | Invalid format of field             |
+          | UNKNOWN_IDEAL_TXN_ID                      | Ideal Txn Id is not known           |
+          | INVALID_FORMAT_GIFT_ID                    | Invalid format of field             |
+          | UNKNOWN_GIFT_ID                           | unique gift id is not known         |
+          | INVALID_FORMAT_RECIPIENT_ACCOUNT_NR       | Invalid format of field             |
+          | BAD_RECIPIENT_ACCOUNT_NUMBER              | Account number is not valid IBAN    |
+          | INVALID_FORMAT_REDEMPTION_CODE            | Invalid format of field             |
+          | INVALID_FORMAT_RECIPIENT_NAME             | Invalid format of field             |
+
       message:
         type: string
         example: Amount is not valid.
