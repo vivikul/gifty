@@ -17,10 +17,10 @@ info:
     
     ## Introduction
     
-    An API that allows you to gift money, without needing any information of the recipient. You easily can create a link for the recipient which they can use to redeem the money directly onto their bank account. 
-      _"__Gifting cash the cashless way__"_. 
-     Allows the users to create, pay, gift and redeem money in a simple, smart and convenient way.
+    With Gifty you can easily create digital cash to give to who you want the way you want, without the need of going to the ATM ever again! It allows the gifter and the receiver of digital cash to create, pay, gift and redeem in a simple, smart and convenient way.
     
+     Gifty allows you to gift money, without needing any information of the recipient. You easily can create a link for the recipient which they can use to redeem the money directly into their bank account.
+     
     ## Gaining Access
     
     Users need to register with ABN AMRO developer portlt to access this api. Please refer to the _Gaining Access_ part of the link
@@ -47,7 +47,6 @@ tags:
 - name: "Gifty"
   description: | 
     Provides REST resources that can be consumed for the creation, retrieval and redemption of digital cash. <br>
-    
 
 schemes:
 - "https"
@@ -58,7 +57,7 @@ paths:
         - "cashGiftCreation"
       summary:  This resource creates a new cash gift that is redeemable. 
       description: | 
-        A post request to this resource creates digital cash, to which in response a link is recieved that can be shared with the recipient. 
+        A post request to this resource creates digital cash, to which in response a link is received that can be shared with the recipient. 
         _Consider this as an envelope with cash._ <br> The gifter can share the link to the recipient in the way he prefers.
       operationId: createCashGift
       consumes:
@@ -99,7 +98,7 @@ paths:
       tags:
         - "viewCashGift"
       summary: This resource allows to retrieve details of the existing gift.
-      description: A get request to this resource with a valid giftId returns the details of the gift, like the amount and  the experationdate. 
+      description: A get request to this resource with a valid giftId returns the details of the gift, like the amount and  the expiration date. 
       operationId: viewCashGiftDetails
       produces:
       - "application/json"
@@ -138,8 +137,8 @@ paths:
       tags:
         - "cashGiftRedemption"
       summary: Redeem the digital cash.
-      description: "A post request to this resource redeems the digital cash on behalf of the reciever. The request should contain the IBAN of the reciever, to which the digital cash amount is credited after successful redemption, and their name. </br> </br>
-      Redemption Code: To defy brute force attack the request must also be supplied with a redemption code, that the gifter has recieved while creating the digital cash."
+      description: "A post request to this resource redeems the digital cash on behalf of the recipient. The request should contain the IBAN and the name of the recipient, to which the digital cash amount is credited after successful redemption. </br> </br>
+      Redemption Code: To defy brute force attack the request must also be supplied with a redemption code, that the gifter has received with the link"
       operationId: redeemCashGift
       consumes:
       - "application/json"
@@ -150,12 +149,12 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/CashGiftRedeemtion'
+            $ref: '#/definitions/CashGiftRedemption'
       responses:
         '200':
           description: successful operation
           schema:
-            $ref: '#/definitions/CashGiftRedeemtionResponse'
+            $ref: '#/definitions/CashGiftRedemptionResponse'
         '400':
           description: Bad request/parameter error
           schema:
@@ -180,7 +179,6 @@ definitions:
     description: Contains all the data required to successfully create the digital cash.
     required:
       - giftAmount
-      - message
     properties:
       giftAmount:
         $ref: '#/definitions/CashGiftAmount'
@@ -188,7 +186,7 @@ definitions:
         $ref: '#/definitions/CashGiftmessage'
       gifterDetails:
         $ref: '#/definitions/GifterDetails'
-      recieverDetails:
+      recipientDetails:
         $ref: '#/definitions/RecipientDetails'
       idealTxnId:
         description: A valid iDeal transaction id. This is the transactionId shared by the iDeal service. 
@@ -204,16 +202,16 @@ definitions:
         $ref: '#/definitions/CashGiftDetails'
       gifterDetails:
         $ref: '#/definitions/GifterDetails'
-      recieverDetails:
+      recipientDetails:
         $ref: '#/definitions/RecipientDetails'
       expirationDate:
         type: string
         description: The last date one can redeem the digital cash.
         format: date
 
-  CashGiftRedeemtion:
+  CashGiftRedemption:
     type: object
-    description: This object encapsulated the information required for redeeming the digital cash.
+    description: This object encapsulates the information required for redeeming the digital cash.
     required:
       - giftId
     properties:
@@ -228,11 +226,11 @@ definitions:
         type: string
         minimum: 3
         maximum: 70
-      redeemptionCode:
-        description: A seceret redemption code that is required for successful redeemption.
+      redemptionCode:
+        description: A seceret redemption code that is required for successful redemption.
         type: string
         pattern: ^[0-9]6
-  CashGiftRedeemtionResponse:
+  CashGiftRedemptionResponse:
     type: object
     description: The Corporate Payment resource to create.
     required:
@@ -246,7 +244,7 @@ definitions:
          - FAILURE
       timestamp:
         type: string
-        description: The IBAN account number of the reciever.
+        description: The IBAN account number of the recipient.
         pattern: '^[A-Z0-9]{10,22}$'
       reason:
         type: string
@@ -313,9 +311,9 @@ definitions:
     multipleOf: 0.5
   CashGiftmessage:
     type: string
-    description: A message to the reciepient of the digital cash.
+    description: A message to the recipient of the digital cash.
     minLength: 3
-    maxLength: 70
+    maxLength: 140
   CashGiftStatus:
     type: string
     description: The status of the digital cash.
