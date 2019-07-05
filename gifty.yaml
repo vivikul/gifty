@@ -77,7 +77,7 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/CashGiftCreationInstruction'
-            
+
       responses:
         '201':
           description: successful operation
@@ -98,8 +98,8 @@ paths:
           schema:
             $ref: '#/definitions/Errors'
       security: 
-      - creation-security:
-        - "gifty:digital-cash:create"
+      - gifty-security:
+        - "gifty:digital-cash"
   /cashGiftDetails/{giftId}:
     get:
       tags:
@@ -137,8 +137,8 @@ paths:
           schema:
             $ref: '#/definitions/Errors'
       security: 
-      - creation-security:
-        - "gifty:digital-cash:create"
+      - gifty-security:
+        - "gifty:digital-cash"
   /cashGiftRedemption:
     post:
       tags:
@@ -177,8 +177,8 @@ paths:
           schema:
             $ref: '#/definitions/Errors'
       security: 
-      - creation-security:
-        - "gifty:digital-cash:create"
+      - gifty-security:
+        - "gifty:digital-cash"
 
 definitions:
   CashGiftCreationInstruction:
@@ -395,10 +395,10 @@ definitions:
         maxItems: 10
         minItems: 0
 securityDefinitions:
-  creation-security:
+  gifty-security:
     type: "oauth2"
     description: "" 
     flow: implicit
-    authorizationUrl: "https://api.ing.com/oauth2/token"
+    authorizationUrl: "https//api-sandbox.abnamro.com/v1/oauth/token"
     scopes: 
-       gifty:digital-cash:create: "Create the digital cash."
+       gifty:digital-cash: "Create the digital cash."
