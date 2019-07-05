@@ -39,6 +39,8 @@ info:
     * The person gifting (gifter) the digital cash creates the cash by means of _/cashGiftCreation_, and recieves a link representing the gift. The gifter can share this link (via mail, sms, QrCode) to the recipient of the gift.<br>
     * The recipient can view the details of the digital cash using _/cashGiftDetails_ and can redeem the digital cash by adding their bank account and name in a request towards _/cashGiftRedemption_.<br>
     
+    <img src="https://github.com/vivikul/gifty/blob/master/smiley.jpg">
+    
     ---
     
 host: "api.cloud9.com"
