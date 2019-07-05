@@ -4,11 +4,9 @@ info:
 
   contact:
     name: "Cloud9"
-    url: "https://developer.cloud9.com"
     email: "TB.channels.API.platform@nl.abnamro.com"
   license:
     name: "Copyright (c) All Rights Reserved."
-    url: "https://developer.cloud9.com"
   version: "1.0"
   x-apiType: open
   description: |-
@@ -75,6 +73,16 @@ paths:
       produces:
       - "application/json"
       parameters:
+        - name: Authorization
+          description: "Access token to be passed as a Bearer token"
+          in: header
+          required: true
+          type: string
+        - name: Api-Key
+          description: "Consumer key obtained after app registration on developer portal"
+          in: header
+          required: true
+          type: string
         - name: cashGiftCreationInstruction
           in: body
           required: true
@@ -113,6 +121,16 @@ paths:
       produces:
       - "application/json"
       parameters:
+        - name: Authorization
+          description: "Access token to be passed as a Bearer token"
+          in: header
+          required: true
+          type: string
+        - name: Api-Key
+          description: "Consumer key obtained after app registration on developer portal"
+          in: header
+          required: true
+          type: string
         - name: giftId
           in: path
           description: The unique Id of the gift 
@@ -155,6 +173,16 @@ paths:
       produces:
       - "application/json"
       parameters:
+        - name: Authorization
+          description: "Access token to be passed as a Bearer token"
+          in: header
+          required: true
+          type: string
+        - name: Api-Key
+          description: "Consumer key obtained after app registration on developer portal"
+          in: header
+          required: true
+          type: string
         - name: redemptionInstruction
           in: body
           required: true
@@ -207,6 +235,7 @@ definitions:
         pattern: ^[0-9A-Za-z]{16}$
         minLength: 3
         maxLength: 70
+        example: fsdfdf4324345322
   CashGiftCreationResponse:
     type: object
     description: The response of successful 'createCashGift' operation  
@@ -219,8 +248,9 @@ definitions:
         $ref: '#/definitions/RecipientDetails'
       expirationDate:
         type: string
-        description: The last date one can redeem the digital cash.
+        description: The last date one can redeem the digital cash. Patten is YYYY-MM-dd
         format: date
+        example: 2018-03-20 
 
   CashGiftRedemption:
     type: object
@@ -262,9 +292,10 @@ definitions:
          - SUCCESS
          - FAILURE
       timestamp:
-        type: string
+        type: integer
         description: The IBAN account number of the recipient.
-        pattern: '^[A-Z0-9]{10,22}$'
+        format: int64
+        example: 1562323086
       reason:
         type: string
         description: The reason behind FAILURE
@@ -406,7 +437,7 @@ definitions:
 securityDefinitions:
   gifty-security:
     type: "oauth2"
-    description: "" 
+    description: "Uses implicit flow" 
     flow: implicit
     authorizationUrl: "https//api-sandbox.abnamro.com/v1/oauth/token"
     scopes: 
