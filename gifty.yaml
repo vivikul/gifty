@@ -140,7 +140,7 @@ paths:
         '200':
           description: successful operation
           schema:
-            $ref: '#/definitions/CashGiftCreationResponse'
+            $ref: '#/definitions/CashGift'
         '400':
           description: Bad request/parameter error
           schema:
@@ -232,10 +232,11 @@ definitions:
       idealTxnId:
         description: A valid iDeal transaction id. This is the transactionId shared by the iDeal service. 
         type: string
-        pattern: ^[0-9A-Za-z]{16}$
+        pattern: '^[A-Za-z0-9 ]{16}$'
         minLength: 3
         maxLength: 70
         example: fsdfdf4324345322
+
   CashGiftCreationResponse:
     type: object
     description: The response of successful 'createCashGift' operation  
@@ -246,6 +247,34 @@ definitions:
         $ref: '#/definitions/GifterDetails'
       recipientDetails:
         $ref: '#/definitions/RecipientDetails'
+      redemptionCode:
+        type: string
+        description: A seceret redemption code that is required for successful redemption.
+        example: 537273
+      redemptionURL:
+        type: string
+        description: A url that the gifter can give to the recipient to use to redeem the digital cash
+        example: https://www.gifty.com/redeem
+      expirationDate:
+        type: string
+        description: The last date one can redeem the digital cash. Patten is YYYY-MM-dd
+        format: date
+        example: 2018-03-20 
+
+  CashGift:
+    type: object
+    description: The response of successful 'createCashGift' operation  
+    properties:
+      giftDetails:
+        $ref: '#/definitions/CashGiftDetails'
+      gifterDetails:
+        $ref: '#/definitions/GifterDetails'
+      recipientDetails:
+        $ref: '#/definitions/RecipientDetails'
+      redemptionURL:
+        type: string
+        description: A url that the gifter can give to the recipient to use to redeem the digital cash
+        example: https://www.gifty.com/redeem
       expirationDate:
         type: string
         description: The last date one can redeem the digital cash. Patten is YYYY-MM-dd
@@ -266,7 +295,7 @@ definitions:
       recipientAccountNumber:
         type: string
         description: The NL IBAN account number of the recipient.
-        pattern: '^NL[0-9]{2}[A-Z]4[0-9]{8}$'
+        pattern: '^NL[0-9]{2}[A-Z]{4}[0-9]{8}$'
         example: NL62ABNA0528362518
       recipientName:
         description: The name of the recipient.
@@ -277,7 +306,7 @@ definitions:
       redemptionCode:
         description: A seceret redemption code that is required for successful redemption.
         type: string
-        pattern: ^[0-9]6
+        pattern: '^[0-9]{6}$'
         example: 537273
   CashGiftRedemptionResponse:
     type: object
